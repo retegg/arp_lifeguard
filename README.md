@@ -20,4 +20,5 @@ please change the `mac` on the `config.json` to mach the mac of your *router*
 # Working on
 | Thing |Implemented| 
 |-------|-----------|
-|re arp in arpsoof  |    NO     |
+|rearp in arpsoof  |    NO     |
+|discover info using python3-nmap|    NO    |
