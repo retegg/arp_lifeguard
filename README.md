@@ -16,3 +16,8 @@ python3 main.py
 *Use `sudo` on linux*
 ## config
 please change the `mac` on the `config.json` to mach the mac of your *router*
+
+# Working on
+| Thing |Implemented| 
+|-------|-----------|
+|rearp  |    NO     |
