@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard Navbar</title>
+  <style>
+    /* Reset some default styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+  
+    /* Body styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #F4F4F4;
+      padding: 20px;
+    }
+  
+    /* Navbar styles */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      background-color: #333;
+      color: #FFF;
+      padding: 20px;
+    }
+  
+    .navbar-brand {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+    }
+  
+    .navbar-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .navbar-link {
+      margin-bottom: 10px;
+    }
+  
+    .navbar-link a {
+      text-decoration: none;
+      color: #FFF;
+      font-weight: bold;
+      padding: 8px 16px;
+      transition: background-color 0.3s ease;
+      border-radius: 5px;
+    }
+  
+    .navbar-link a:hover {
+      background-color: #555;
+    }
+  
+    /* Dashboard content styles */
+    .dashboard-content {
+      margin-left: 240px;
+    }
+  
+    .row {
+      display: flex;
+      margin-bottom: 10px;
+    }
+  
+    .element {
+      background-color: #FFF;
+      border: 1px solid #DDD;
+      padding: 20px;
+      border-radius: 5px;
+      flex: 1;
+    }
+  
+    #mac {
+      margin-right: 10px;
+    }
+  
+    h1, h2, h3 {
+      margin-bottom: 10px;
+    }
+  
+    #conf {
+      display: flex;
+      align-items: center;
+    }
+  
+    #conf button {
+      padding: 10px 20px;
+      background-color: #333;
+      color: #FFF;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+  
+    #conf button:hover {
+      background-color: #555;
+    }
+  
+    #range {
+      margin-left: 10px;
+      width: 100px;
+    }
+  
+    #devices-list {
+      margin-top: 20px;
+    }
+  
+    #device-list {
+      list-style: none;
+    }
+  
+    #device-list li {
+      margin-bottom: 5px;
+      height: 10vh;
+    }
+    #device-list {
+  list-style: none;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+  </style>
+  
+  
+  
+  
+  
+</head>
+<body>
+  <div class="navbar">
+    <div class="navbar-brand">Dashboard</div>
+    <ul class="navbar-links">
+      <li class="navbar-link"><a href="#">Home</a></li>
+      <li class="navbar-link"><a href="#">About</a></li>
+      <li class="navbar-link"><a href="#">Contact</a></li>
+    </ul>
+  </div>
+
+  <div class="dashboard-content">
+    <div class="row">
+      <div id="mac" class="element">
+        <h1>Router Mac: </h1>
+      </div>
+    </div>
+    <div class="row">
+      <div id="inter" class="element">
+        <h2>Intervals: </h2>
+        <h3>Status: </h3>
+      </div>
+      <div id="conf" class="element">
+        <button onclick="checkArps()">Check!</button>
+        <input type="range" id="range" value="10">
+      </div>
+    </div>
+
+    <div id="devices-list" class="element">
+      <h2>Devices List:</h2>
+      <ul id="device-list"></ul>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+<script>
+  async function getRouterMAC() {
+    try {
+      const response = await fetch('/mac');
+      
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      
+      const macAddress = await response.text();
+      console.log('MAC Address:', macAddress);
+      return macAddress;
+    } catch (error) {
+      console.error('Error:', error);
+      return null;
+    }
+  }
+
+  async function updateMACAddress() {
+    const macElement = document.getElementById('mac');
+    const macAddress = await getRouterMAC();
+    macElement.innerHTML = "<h1>Router Mac:</h1>"+macAddress;  // Use '=' instead of '+=' to replace the inner HTML
+  }
+
+  async function getStatus() {  // Renamed the function to getStatus()
+    try {
+      const response = await fetch('/checker');
+      
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      
+      const status = await response.text();
+      return status;
+    } catch (error) {
+      console.error('Error:', error);
+      return null;
+    }
+  }
+
+  async function checkArps() {  // Renamed the function to checkArps()
+    const statusElement = document.getElementById("inter");
+    const int = document.getElementById("range")
+    const interval = int.value * 1000;
+    console.log(interval);
+
+    const checkLoop = async () => {
+      const status = await getStatus();
+      const interval = int.value * 1000;
+      console.log(interval);
+      if (status === "False") {  // Use strict comparison (===) to compare the status
+        updateMACAddress()
+        statusElement.innerHTML = `<h2>Interval: ${interval}</h2><br><h3>Status: OK</h3>`;
+        document.body.style.backgroundColor = '#05BFDB';
+      } else {
+        updateMACAddress()
+        statusElement.innerHTML = `<h2>Interval: ${interval}</h2><br><h3>Status: HACK IN PROGRESS</h3>`;
+        document.body.style.backgroundColor = '#E63946';
+      }
+
+      setTimeout(checkLoop, interval);
+    };
+
+    checkLoop();
+  }
+
+  // Call the function to update the MAC address
+  updateMACAddress();
+  checkArps();
+</script>
+
+
+</html>
