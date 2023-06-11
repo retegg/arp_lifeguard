@@ -1,4 +1,4 @@
 # arp_lifeguard
-An HTML and PythonProject that detects arp spoofing
+An HTML and Python, Project that detects arp spoofing
 
 ## By Santiago
