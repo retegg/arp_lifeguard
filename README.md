@@ -22,3 +22,5 @@ please change the `mac` on the `config.json` to mach the mac of your *router*
 |-------|-----------|
 |rearp in arpsoof  |    NO     |
 |discover info using python3-nmap|    NO    |
+# Please Help!
+I need help developing this project, please modify the code and add more things. Please
